@@ -4,4 +4,5 @@ export interface Crianca {
   genero: string;
   turma: string;
   idResponsavel: string;
+  autista: boolean;
 }

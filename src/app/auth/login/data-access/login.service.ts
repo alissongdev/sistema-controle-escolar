@@ -1,18 +1,18 @@
-import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
-import { LoginResponse } from '../interfaces/login-response';
-import { Responsavel } from '../../../shared/interfaces/responsavel';
 import { Monitor } from '../../../shared/interfaces/monitor';
-import { responsavelMocks } from '../mocks/responsavelMocks';
+import { Responsavel } from '../../../shared/interfaces/responsavel';
+import { LoginResponse } from '../interfaces/login-response';
 import { monitorMocks } from '../mocks/monitorMocks';
+import { responsavelMocks } from '../mocks/responsavelMocks';
 
 export type LoginStatus = 'pending' | 'authenticating' | 'success' | 'error';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class LoginService {
   http = inject(HttpClient);
@@ -26,29 +26,56 @@ export class LoginService {
       return this.fakeLogin(email, password);
     }
 
-    return this.http.post<LoginResponse>(`${this.apiURL}/login`, {
-      email,
-      password
-    }).pipe(
-      map(response => {
-        if (response.success) {
-          this.setLocalStorage(response.userType, response.userType === 'parent' ? response.responsavel : response.monitor);
-        }
-        return false;
-      }),
-      catchError(() => of(false))
-    );
+    return this.http
+      .post<LoginResponse>(`${this.apiURL}/login`, {
+        email,
+        password,
+      })
+      .pipe(
+        map((response) => {
+          if (response.success) {
+            this.setLocalStorage(
+              response.userType,
+              response.userType === 'parent'
+                ? response.responsavel
+                : response.monitor
+            );
+          }
+          return false;
+        }),
+        catchError(() => of(false))
+      );
   }
 
   private fakeLogin(email: string, password: string): Observable<boolean> {
     const users = [
-      { email: 'maria@escola.com', password: 'maria123', userType: 'monitor', data: monitorMocks.monitorMaria },
-      { email: 'alessandra@escola.com', password: 'alessandra123', userType: 'monitor', data: monitorMocks.monitorAlessandra },
-      { email: 'joana@gmail.com', password: 'joana123', userType: 'parent', data: responsavelMocks.responsavelJoana },
-      { email: 'fatima@gmail.com', password: 'fatima123', userType: 'parent', data: responsavelMocks.responsavelFatima }
+      {
+        email: 'maria@escola.com',
+        password: 'maria123',
+        userType: 'monitor',
+        data: monitorMocks.monitorMaria,
+      },
+      {
+        email: 'alessandra@escola.com',
+        password: 'alessandra123',
+        userType: 'monitor',
+        data: monitorMocks.monitorAlessandra,
+      },
+      {
+        email: 'joana@gmail.com',
+        password: 'joana123',
+        userType: 'parent',
+        data: responsavelMocks.responsavelJoana,
+      },
+      {
+        email: 'fatima@gmail.com',
+        password: 'fatima123',
+        userType: 'parent',
+        data: responsavelMocks.responsavelFatima,
+      },
     ];
 
-    const user = users.find(u => u.email === email && u.password === password);
+    const user = users.find((u) => u.email === email);
     if (user) {
       this.setLocalStorage(user.userType, user.data);
       return of(true);

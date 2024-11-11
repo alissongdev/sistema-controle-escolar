@@ -1,57 +1,82 @@
-import { Component, EventEmitter, Input, Output, inject } from "@angular/core";
-import { FormBuilder, ReactiveFormsModule } from "@angular/forms";
-import { Credentials } from "../../../shared/interfaces/credentials";
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { Credentials } from '../../../shared/interfaces/credentials';
 import { LoginStatus } from '../data-access/login.service';
 
 @Component({
-  selector: "app-login-form",
+  selector: 'app-login-form',
   standalone: true,
   imports: [ReactiveFormsModule],
   template: `
-    <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
-      <div class="sm:mx-auto sm:w-full sm:max-w-sm">
-        <img class="mx-auto h-10 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=blue&shade=600" alt="Your Company">
-        <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Acessar a plataforma</h2>
-      </div>
+    <div class="min-h-screen flex items-center justify-center bg-gray-100">
+      <div class="max-w-lg w-full bg-white rounded-lg shadow-md p-8">
+        <h2 class="text-2xl font-bold text-center mb-6">
+          Agenda Digital - EMEB José Aparecido Silva de Almeida
+        </h2>
 
-      <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+        @if (loginStatus === 'error') {
+        <div
+          class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4"
+        >
+          Não foi possível se autenticar com os dados informados.
+        </div>
+        }
+
         <form
           [formGroup]="loginForm"
           (ngSubmit)="login.emit(loginForm.getRawValue())"
-          class="space-y-6"
+          class="space-y-4"
         >
           <div>
-            <label for="email" class="block text-sm font-medium leading-6 text-gray-900">E-mail</label>
-            <div class="mt-2">
-              <input formControlName="email" id="email" name="email" type="email" autocomplete="email" required class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6">
-            </div>
+            <label for="email" class="block text-sm font-medium text-gray-700"
+              >E-mail</label
+            >
+            <input
+              type="email"
+              id="email"
+              formControlName="email"
+              autocomplete="email"
+              name="email"
+              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              required
+            />
           </div>
 
           <div>
-            <div class="flex items-center justify-between">
-              <label class="block text-sm font-medium leading-6 text-gray-900">Senha</label>
-              <div class="text-sm">
-                <a href="#" class="font-semibold text-blue-600 hover:text-blue-500">Esqueceu a senha?</a>
-              </div>
-            </div>
-            <div class="mt-2">
-              <input formControlName="password" id="password" name="password" type="password" autocomplete="current-password" required class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6">
-            </div>
+            <label
+              for="password"
+              class="block text-sm font-medium text-gray-700"
+              >Senha</label
+            >
+            <input
+              type="password"
+              id="password"
+              formControlName="password"
+              autocomplete="current-password"
+              name="password"
+              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              required
+            />
           </div>
 
-          @if (loginStatus === 'error') {
-            <div class="text-red-500">Não foi possível se autenticar com os dados informados.</div>
-          }
-
-          <div>
-            <button type="submit" class="flex w-full justify-center rounded-md bg-blue-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">Entrar</button>
-          </div>
+          <button
+            type="submit"
+            class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          >
+            Entrar
+          </button>
         </form>
 
-        <p class="mt-10 text-center text-sm text-gray-500">
-          Ainda não tem uma conta?
-          <a href="#" class="font-semibold leading-6 text-blue-600 hover:text-blue-500">Cadastre-se</a>
-        </p>
+        <div class="mt-4 text-sm text-gray-600">
+          <p>Usuários para teste:</p>
+          <ul class="list-disc list-inside">
+            <li>Monitor: maria&#64;escola.com</li>
+            <li>Monitor: alessandra&#64;escola.com</li>
+            <li>Parent: joana&#64;gmail.com</li>
+            <li>Parent: fatima&#64;gmail.com</li>
+            <li>Senha: qualquer valor será aceito</li>
+          </ul>
+        </div>
       </div>
     </div>
   `,

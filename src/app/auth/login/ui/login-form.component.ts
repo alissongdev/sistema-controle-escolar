@@ -66,17 +66,6 @@ import { LoginStatus } from '../data-access/login.service';
             Entrar
           </button>
         </form>
-
-        <div class="mt-4 text-sm text-gray-600">
-          <p>Usuários para teste:</p>
-          <ul class="list-disc list-inside">
-            <li>Monitor: maria&#64;escola.com</li>
-            <li>Monitor: alessandra&#64;escola.com</li>
-            <li>Parent: joana&#64;gmail.com</li>
-            <li>Parent: fatima&#64;gmail.com</li>
-            <li>Senha: qualquer valor será aceito</li>
-          </ul>
-        </div>
       </div>
     </div>
   `,

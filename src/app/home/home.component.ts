@@ -93,7 +93,6 @@ export default class HomeComponent implements OnInit {
   }
 
   onAtividadeCadastrada(novasAtividades: Atividade[]) {
-    this.atividades.push(...novasAtividades);
     const atividadesFromLocalStorage = JSON.parse(
       localStorage.getItem('atividades') || '[]'
     );
@@ -105,6 +104,11 @@ export default class HomeComponent implements OnInit {
       })),
     ];
     localStorage.setItem('atividades', JSON.stringify(atividadesAtualizadas));
+
+    this.atividades = [...this.atividades, ...novasAtividades].sort(
+      (a, b) => b.data.getTime() - a.data.getTime()
+    );
+
     this.cdr.detectChanges();
   }
 

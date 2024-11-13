@@ -7,6 +7,7 @@ import {
   LOCALE_ID,
   OnInit,
   Output,
+  SimpleChanges,
 } from '@angular/core';
 import { LoginService } from '../../auth/login/data-access/login.service';
 import { Atividade } from '../../shared/interfaces/atividade';
@@ -234,15 +235,30 @@ export class AtividadesTableComponent implements OnInit {
     this.filteredAtividades = this.atividades;
   }
 
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['atividades']) {
+      this.filteredAtividades =
+        this.selectedTurma === 'Todas as turmas'
+          ? this.atividades
+          : this.atividades.filter(
+              (atividade) => atividade.crianca.turma === this.selectedTurma
+            );
+      this.filteredAtividades.sort(
+        (a, b) => b.data.getTime() - a.data.getTime()
+      );
+    }
+  }
+
   onTurmaChange(event: Event) {
     const turma = (event.target as HTMLSelectElement).value;
     this.selectedTurma = turma;
     this.filteredAtividades =
       turma === 'Todas as turmas'
-        ? this.atividades
+        ? [...this.atividades]
         : this.atividades.filter(
             (atividade) => atividade.crianca.turma === turma
           );
+    this.filteredAtividades.sort((a, b) => b.data.getTime() - a.data.getTime());
     this.turmaChanged.emit(turma);
   }
 

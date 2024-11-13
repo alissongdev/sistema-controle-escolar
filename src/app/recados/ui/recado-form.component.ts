@@ -116,7 +116,7 @@ export class RecadoFormComponent implements OnChanges {
     id: [this.generateId()],
     remetenteId: [this.remetenteId],
     nomeEmailRemetente: [this.nomeEmailRemetente],
-    dataEnvio: [new Date().toLocaleDateString()],
+    dataEnvio: [new Date()],
     assunto: [''],
     mensagem: [''],
   });
@@ -133,7 +133,10 @@ export class RecadoFormComponent implements OnChanges {
 
   onSubmit() {
     if (this.recadoToEdit) {
-      this.update.emit(this.recadoForm.getRawValue());
+      this.update.emit({
+        ...this.recadoForm.getRawValue(),
+        editedAt: new Date(),
+      });
     } else {
       this.recado.emit(this.recadoForm.getRawValue());
     }
@@ -142,7 +145,7 @@ export class RecadoFormComponent implements OnChanges {
       id: this.generateId(),
       remetenteId: this.remetenteId,
       nomeEmailRemetente: this.nomeEmailRemetente,
-      dataEnvio: new Date().toLocaleDateString(),
+      dataEnvio: new Date(),
       assunto: '',
       mensagem: '',
     });

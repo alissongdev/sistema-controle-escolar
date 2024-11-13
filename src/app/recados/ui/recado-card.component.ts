@@ -1,12 +1,23 @@
-import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { CommonModule, registerLocaleData } from '@angular/common';
+import ptBr from '@angular/common/locales/pt';
+import {
+  Component,
+  EventEmitter,
+  inject,
+  Input,
+  LOCALE_ID,
+  Output,
+} from '@angular/core';
 import { LoginService } from '../../auth/login/data-access/login.service';
 import { Recado } from '../interfaces/recado';
+
+registerLocaleData(ptBr);
 
 @Component({
   selector: 'app-recado-card',
   standalone: true,
   imports: [CommonModule],
+  providers: [{ provide: LOCALE_ID, useValue: 'pt-BR' }],
   template: `
     <div class="space-y-4 mb-8">
       <div class="bg-white shadow-md border rounded-lg p-4">
@@ -20,6 +31,9 @@ import { Recado } from '../interfaces/recado';
           </p>
         </div>
         <p class="text-gray-600 my-4">{{ recado.mensagem }}</p>
+        <p *ngIf="recado.editedAt" class="text-gray-400 text-sm italic">
+          Editado em: {{ recado.editedAt | date : 'dd/MM/yyyy' }}
+        </p>
         <div *ngIf="canDeleteRecado()" class="flex justify-end space-x-2">
           <button
             (click)="editRecado()"

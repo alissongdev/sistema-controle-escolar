@@ -32,6 +32,8 @@ registerLocaleData(ptBr);
         <select
           id="turma-select"
           class="block w-1/4 p-2 border border-gray-300 rounded-md"
+          (change)="onTurmaChange($event)"
+          [value]="selectedTurma"
         >
           <option *ngFor="let turma of turmas" [value]="turma">
             {{ turma }}
@@ -69,7 +71,10 @@ registerLocaleData(ptBr);
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-100 border-t border-gray-100">
-          <tr class="hover:bg-gray-50" *ngFor="let atividade of atividades">
+          <tr
+            class="hover:bg-gray-50"
+            *ngFor="let atividade of filteredAtividades"
+          >
             <th class="flex gap-3 px-6 py-4 font-normal text-gray-900">
               <div class="relative h-10 w-10">
                 <img
@@ -211,15 +216,34 @@ export class AtividadesTableComponent implements OnInit {
   @Input({ required: true }) isUserMonitor!: boolean;
   @Output() atividadeDeletada = new EventEmitter<string>();
   @Output() atividadeEditada = new EventEmitter<Atividade>();
+  @Output() turmaChanged = new EventEmitter<string>();
   turmas: string[] = [];
   isEditModalOpen = false;
   selectedAtividade?: Atividade;
+  selectedTurma: string = 'Todas as turmas';
+  filteredAtividades: Atividade[] = [];
 
   constructor(private loginService: LoginService) {}
 
   ngOnInit(): void {
-    this.turmas = this.loginService.getMonitor()!.turmas;
+    this.turmas = [
+      'Todas as turmas',
+      ...this.loginService.getMonitor()!.turmas,
+    ];
     this.atividades.sort((a, b) => b.data.getTime() - a.data.getTime());
+    this.filteredAtividades = this.atividades;
+  }
+
+  onTurmaChange(event: Event) {
+    const turma = (event.target as HTMLSelectElement).value;
+    this.selectedTurma = turma;
+    this.filteredAtividades =
+      turma === 'Todas as turmas'
+        ? this.atividades
+        : this.atividades.filter(
+            (atividade) => atividade.crianca.turma === turma
+          );
+    this.turmaChanged.emit(turma);
   }
 
   openEditModal(atividade: Atividade) {

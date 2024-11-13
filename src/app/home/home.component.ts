@@ -28,9 +28,11 @@ import { CadastrarAtividadeComponent } from './ui/cadastrar-atividade.component'
             [isUserMonitor]="loginService.isUserMonitor()"
             (atividadeDeletada)="onAtividadeDeletada($event)"
             (atividadeEditada)="onAtividadeEditada($event)"
+            (turmaChanged)="onTurmaChanged($event)"
           />
           <app-cadastrar-atividade
             *ngIf="this.loginService.isUserMonitor()"
+            [selectedTurma]="selectedTurma"
             (atividadeCadastrada)="onAtividadeCadastrada($event)"
           />
         </div>
@@ -46,6 +48,7 @@ export default class HomeComponent implements OnInit {
 
   criancas: Crianca[] = [];
   atividades: Atividade[] = [];
+  selectedTurma: string = 'Todas as turmas';
 
   ngOnInit(): void {
     if (this.loginService.isUserMonitor()) {
@@ -114,5 +117,9 @@ export default class HomeComponent implements OnInit {
 
   onAtividadeDeletada(atividadeId: string) {
     this.atividades = this.atividades.filter((a) => a.id !== atividadeId);
+  }
+
+  onTurmaChanged(turma: string) {
+    this.selectedTurma = turma;
   }
 }

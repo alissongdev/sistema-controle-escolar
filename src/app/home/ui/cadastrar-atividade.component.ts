@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { v4 as uuidv4 } from 'uuid';
 import { LoginService } from '../../auth/login/data-access/login.service';
@@ -121,8 +128,10 @@ import { Crianca } from '../../shared/interfaces/crianca';
 })
 export class CadastrarAtividadeComponent implements OnInit {
   @Output() atividadeCadastrada = new EventEmitter<Atividade[]>();
+  @Input() selectedTurma: string = 'Todas as turmas';
 
   criancas: Crianca[] = [];
+  allCriancas: Crianca[] = [];
   selectedCrianca?: Crianca;
   tipoAtividades = Object.values(TipoAtividade);
   atividadeRealizadas = Object.values(AtividadeRealizada);
@@ -147,9 +156,26 @@ export class CadastrarAtividadeComponent implements OnInit {
       this.dataService
         .getCriancasByTurma(this.loginService.getMonitor()!.turmas)
         .subscribe((criancas) => {
-          this.criancas = criancas;
+          this.allCriancas = criancas;
+          this.filterCriancasByTurma();
         });
     }
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['selectedTurma'] && this.allCriancas.length > 0) {
+      this.filterCriancasByTurma();
+      this.selectedCrianca = undefined;
+    }
+  }
+
+  private filterCriancasByTurma() {
+    this.criancas =
+      this.selectedTurma === 'Todas as turmas'
+        ? this.allCriancas
+        : this.allCriancas.filter(
+            (crianca) => crianca.turma === this.selectedTurma
+          );
   }
 
   saveAtividadeToLocalStorage(atividade: Atividade): void {
